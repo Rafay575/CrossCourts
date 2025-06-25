@@ -4,6 +4,7 @@ import { FaSearch } from "react-icons/fa";
 import { MdNavigateBefore, MdNavigateNext } from "react-icons/md";
 import { format } from "date-fns";
 import * as XLSX from "xlsx";
+import { baseUrl } from "../../api/baseUrl";
 
 // ------------------ Types ------------------
 type Booking = {
@@ -30,13 +31,13 @@ type Court = {
 
 // ------------------ Fetch Functions ------------------
 const fetchBookings = async (): Promise<Booking[]> => {
-  const res = await fetch("http://localhost:5000/api/booking-history");
+  const res = await fetch(`${baseUrl}/api/booking-history`);
   if (!res.ok) throw new Error("Failed to fetch bookings");
   return res.json();
 };
 
 const fetchCourts = async (): Promise<Court[]> => {
-  const res = await fetch("http://localhost:5000/api/courts");
+  const res = await fetch(`${baseUrl}/api/courts`);
   if (!res.ok) throw new Error("Failed to fetch courts");
   return res.json();
 };

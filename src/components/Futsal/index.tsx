@@ -11,6 +11,7 @@ import {
   editBooking,
   deleteBooking 
 } from '../../api/courtService';
+import { baseUrl } from '../../api/baseUrl';
 
 // Types for Slots, Courts, and Booking Data
 type BookingDetails = {
@@ -154,7 +155,7 @@ const Futsal: React.FC = () => {
 
   const generateOTP = async (bookingId: number) => {
     try {
-      const res = await fetch(`http://localhost:5000/api/delete-booking/${bookingId}/generate-otp`, {
+      const res = await fetch(`${baseUrl}/api/delete-booking/${bookingId}/generate-otp`, {
         method: 'POST'
       });
       const data = await res.json();
@@ -174,7 +175,7 @@ const Futsal: React.FC = () => {
   const verifyOTP = async () => {
     if (!otpBookingId) return;
     try {
-      const res = await fetch(`http://localhost:5000/api/delete-booking/${otpBookingId}/verify-otp`, {
+      const res = await fetch(`${baseUrl}/api/delete-booking/${otpBookingId}/verify-otp`, {
         method: 'POST',
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ otp: otpValue })

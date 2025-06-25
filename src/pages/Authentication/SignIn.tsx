@@ -36,13 +36,8 @@ const SignIn: React.FC = () => {
     };
 
   return (
-    <div className='p-5 h-screen flex flex-col justify-center dark:bg-boxdark  md:p-10'>
-   <div className='mb-4'>
-
-      <h2 className="text-title-md2 font-semibold text-black dark:text-white">
-      Sign In
-      </h2>
-   </div>
+    <div className='p-5  flex flex-col justify-center dark:bg-boxdark  md:p-10'>
+   
       <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
         <div className="flex flex-wrap items-center">
           <div className="hidden w-full xl:block xl:w-1/2">

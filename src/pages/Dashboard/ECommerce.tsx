@@ -4,6 +4,7 @@ import CardDataStats from '../../components/CardDataStats';
 import ChartOne from '../../components/Charts/ChartOne';
 import TableOne from '../../components/Tables/TableOne';
 import { useNavigate } from 'react-router-dom';
+import { baseUrl } from '../../api/baseUrl';
 
 type TotalBookingsResponse = { totalBookings: number };
 type TotalPriceResponse = { totalPrice: number };
@@ -11,25 +12,25 @@ type UniqueUsersResponse = { totalUsers: number };
 type TotalCourtsResponse = { totalCourts: number };
 
 const fetchTotalBookings = async (): Promise<TotalBookingsResponse> => {
-  const res = await fetch('http://localhost:5000/api/summary/total-bookings');
+  const res = await fetch(`${baseUrl}/api/summary/total-bookings`);
   if (!res.ok) throw new Error('Failed to fetch total bookings.');
   return res.json();
 };
 
 const fetchTotalPrice = async (): Promise<TotalPriceResponse> => {
-  const res = await fetch('http://localhost:5000/api/summary/total-price');
+  const res = await fetch(`${baseUrl}/api/summary/total-price`);
   if (!res.ok) throw new Error('Failed to fetch total price.');
   return res.json();
 };
 
 const fetchUniqueUsers = async (): Promise<UniqueUsersResponse> => {
-  const res = await fetch('http://localhost:5000/api/summary/unique-users');
+  const res = await fetch(`${baseUrl}/api/summary/unique-users`);
   if (!res.ok) throw new Error('Failed to fetch unique users.');
   return res.json();
 };
 
 const fetchTotalCourts = async (): Promise<TotalCourtsResponse> => {
-  const res = await fetch('http://localhost:5000/api/summary/total-courts');
+  const res = await fetch(`${baseUrl}/api/summary/total-courts`);
   if (!res.ok) throw new Error('Failed to fetch total courts.');
   return res.json();
 };

@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // API Base URL
-const API_BASE_URL = 'http://localhost:5000/api'; // Update with your backend URL
+const API_BASE_URL = 'https://crosscourtspk.com/api'; // Update with your backend URL
 
 type BookingData = {
   court_id: number;

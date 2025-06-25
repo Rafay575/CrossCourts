@@ -12,6 +12,7 @@ import {
   editBooking,
   deleteBooking,
 } from '../../api/courtService';
+import { baseUrl } from '../../api/baseUrl';
 
 // Types for Slots, Courts, and Booking Data
 type BookingDetails = {
@@ -170,7 +171,7 @@ const AvailabilityGrid: React.FC = () => {
   const generateOTP = async (bookingId: number) => {
     try {
       const res = await fetch(
-        `http://localhost:5000/api/delete-booking/${bookingId}/generate-otp`,
+        `${baseUrl}/api/delete-booking/${bookingId}/generate-otp`,
         {
           method: 'POST',
         },
@@ -193,7 +194,7 @@ const AvailabilityGrid: React.FC = () => {
     if (!otpBookingId) return;
     try {
       const res = await fetch(
-        `http://localhost:5000/api/delete-booking/${otpBookingId}/verify-otp`,
+        `${baseUrl}/api/delete-booking/${otpBookingId}/verify-otp`,
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -240,7 +241,7 @@ const AvailabilityGrid: React.FC = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['slots'] });
       const phone = formData.phone; 
-      axios.post(`http://localhost:5000/send-whatsapp`, { phone });
+      axios.post(`${baseUrl}/send-whatsapp`, { phone });
       toast.success('Booking successful!');
       setFormData({
         name: '',

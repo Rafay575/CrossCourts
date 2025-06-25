@@ -3,7 +3,7 @@ import { Navigate, Outlet } from "react-router-dom";
 import axios from "axios";
 import Loader from "./Loader";
 
-const API_BASE_URL = "http://localhost:5000/api";
+const API_BASE_URL = "https://crosscourtspk.com/api";
 
 const ProtectedRoute = () => {
     const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);

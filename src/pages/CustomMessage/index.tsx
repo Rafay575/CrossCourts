@@ -4,13 +4,11 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'react-toastify'; // or another toast library
 import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
 import { useNavigate } from 'react-router-dom';
+import { baseUrl } from '../../api/baseUrl';
 
-// Adjust as needed
-const API_BASE_URL = 'http://localhost:5000/api';
 
-// 1) Fetch existing custom message
 async function fetchCustomMessage() {
-  const res = await axios.get(`${API_BASE_URL}/custom-message`);
+  const res = await axios.get(`${baseUrl}/custom-message`);
   return res.data; // Expecting { message: string }
 }
 type data = {
@@ -20,7 +18,7 @@ type data = {
 async function updateCustomMessage(
   newMessage: string,
 ): Promise<{ message: string }> {
-  const res = await fetch('http://localhost:5000/api/custom-message', {
+  const res = await fetch(`${baseUrl}/api/custom-message`, {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ message: newMessage }),

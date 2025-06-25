@@ -1,6 +1,7 @@
 import React from "react";
 import { useQuery } from "@tanstack/react-query";
 import { format } from "date-fns";
+import { baseUrl } from "../../api/baseUrl";
 
 // 1) Define a TypeScript type for your booking records.
 type Booking = {
@@ -15,7 +16,7 @@ type Booking = {
 
 // 2) Fetch function that calls your API endpoint returning the last 10 bookings.
 async function fetchLastTenBookings(): Promise<Booking[]> {
-  const res = await fetch("http://localhost:5000/api/last-five-bookings");
+  const res = await fetch(`${baseUrl}/api/last-five-bookings`);
   if (!res.ok) {
     throw new Error("Failed to fetch last 10 bookings");
   }

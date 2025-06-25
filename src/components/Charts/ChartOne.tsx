@@ -2,6 +2,7 @@ import React from "react";
 import ReactApexChart from "react-apexcharts";
 import { useQuery } from "@tanstack/react-query";
 import { ApexOptions } from "apexcharts";
+import { baseUrl } from "../../api/baseUrl";
 
 // ------------------ Types ------------------
 type MonthlyCourtBooking = {
@@ -14,7 +15,7 @@ type MonthlyCourtBooking = {
 
 // ------------------ Fetch Function ------------------
 async function fetchBookingsPerMonth(): Promise<MonthlyCourtBooking[]> {
-  const res = await fetch("http://localhost:5000/api/bookings-per-month");
+  const res = await fetch(`${baseUrl}/api/bookings-per-month`);
   if (!res.ok) {
     throw new Error("Failed to fetch monthly bookings");
   }
