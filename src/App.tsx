@@ -33,15 +33,14 @@ function App() {
         <Routes>
             {/* ----- Auth Routes (Accessible Without Login) ----- */}
             <Route path="/auth/signin" element={<><PageTitle title="Signin | CrossCourts" /><SignIn /></>} />
-            <Route path="/auth/signup" element={<><PageTitle title="Signup | CrossCourts" /><SignUp /></>} />
-
+          
             {/* ----- Secure Routes Wrapped in ProtectedRoute ----- */}
          
                 <Route element={<DefaultLayout />}>
                     <Route index element={<><PageTitle title="Dashboard" /><ECommerce /></>} />
                     <Route path="/booking-management" element={<><PageTitle title="Booking Management" /><BookingManagement /></>} />
                     <Route path="/booking-history" element={<><PageTitle title="Booking History" /><BookingHistory /></>} />
-                    <Route path="/booking-settings" element={<><PageTitle title="Booking Settings" /><BookingSettings /></>} />
+                  
                     <Route path="/custom-message" element={<><PageTitle title="Custom Message" /><CustomMessage /></>} />
                 </Route>
           
