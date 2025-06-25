@@ -1,124 +1,158 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { toast } from 'react-toastify'; // or another toast library
-import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
-import { useNavigate } from 'react-router-dom';
-import { baseUrl } from '../../api/baseUrl';
+import  { useState, useEffect } from 'react'
+import axios, { AxiosError } from 'axios'
+import {
+  useQuery,
+  useMutation,
+  useQueryClient,
+} from '@tanstack/react-query'
+import { toast } from 'react-toastify'
+import { useNavigate } from 'react-router-dom'
+import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb'
+import { baseUrl } from '../../api/baseUrl'
 
+type MessagePayload = { message: string }
+type ServerError  = { message?: string; errors?: Record<string,string[]> }
 
-async function fetchCustomMessage() {
-  const res = await axios.get(`${baseUrl}/custom-message`);
-  return res.data; // Expecting { message: string }
-}
-type data = {
-  message: string;
-};
-// 2) Update custom message
-async function updateCustomMessage(
-  newMessage: string,
-): Promise<{ message: string }> {
-  const res = await fetch(`${baseUrl}/api/custom-message`, {
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ message: newMessage }),
-  });
-  if (!res.ok) {
-    throw new Error('Failed to update custom message');
+export default function CustomMessage() {
+  const navigate     = useNavigate()
+  const queryClient  = useQueryClient()
+  const [text, setText]           = useState('')
+  const [fieldError, setFieldError] = useState<string|null>(null)
+
+  // Redirect if not logged in
+  useEffect(() => {
+    if (!localStorage.getItem('token')) {
+      navigate('/auth/signin')
+    }
+  }, [navigate])
+
+  // Fetch existing message
+// Fetch existing message
+const {
+  data: message,
+  isPending,
+  isError,
+  error,
+  isFetching,
+} = useQuery<MessagePayload, AxiosError>({
+  queryKey: ['customMessage'],
+  queryFn: async () => {
+    const res = await axios.get<MessagePayload>(
+      `${baseUrl}/api/custom-message`
+    )
+    return res.data
+  },
+ 
+})
+
+useEffect(() => {
+  if (message?.message) {
+    setText(message.message)
   }
-  // For instance: { message: "Message updated successfully!" }
-  return res.json();
-}
+}, [message])
 
-const CustomMessage: React.FC = () => {
-  const queryClient = useQueryClient();
-  const [message, setMessage] = useState('');
-  const navigate = useNavigate();
-  useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (!token) {
-      navigate('/auth/signin');
-    }
-  }, []);
-
-  // React Query: fetch the current message
-  const { data, isLoading, isError, error, isFetching } = useQuery<
-    { message: string },
-    Error
+  // Mutation to update
+  const mutation = useMutation<
+    MessagePayload,
+    AxiosError<ServerError>,
+    string
   >({
-    queryKey: ['customMessage'],
-    queryFn: fetchCustomMessage,
-  });
-
-  // React Query: mutation for updating the message
-  const mutation = useMutation<{ message: string }, Error, string>({
-    mutationFn: updateCustomMessage,
-    onSuccess: (data) => {
-      // 'data' is { message: string }
-      toast.success(data.message);
-      queryClient.invalidateQueries({ queryKey: ['customMessage'] });
+    mutationFn: async (newMsg) => {
+      const res = await axios.put<MessagePayload>(
+        `${baseUrl}/api/custom-message`,
+        { message: newMsg },
+        { headers: { 'Content-Type': 'application/json' } }
+      )
+      return res.data
     },
-    onError: () => {
-      toast.error('Failed to update the message.');
+    onError: (err) => {
+      const srv = err.response?.data
+      const msg =
+        srv?.message ||
+        Object.values(srv?.errors || {})[0]?.[0] ||
+        'Failed to save.'
+      setFieldError(msg)
     },
-  });
+    onSuccess: () => {
+      toast.success('Saved successfully!')
+      setFieldError(null)
+      queryClient.invalidateQueries({ queryKey:['customMessage']})
+    },
+  })
 
-  // Populate local state when data arrives
-  useEffect(() => {
-    if (data?.message) {
-      setMessage(data.message);
+  const handleSave = () => {
+    setFieldError(null)
+    if (text.trim().length < 10) {
+      setFieldError('Message must be at least 10 characters.')
+      return
     }
-  }, [data]);
-
-  // 3) Handle Update
-  const handleUpdate = () => {
-    // Validate min length
-    if (message.trim().length < 10) {
-      toast.error('Message must be at least 10 characters.');
-      return;
-    }
-    // Call the mutation
-    mutation.mutate(message);
-  };
-
-  if (isError) {
-    return (
-      <>
-        <Breadcrumb pageName="Custom Message" />
-        <div className="p-4 text-red-500 dark:text-red-400">
-          Error: {error?.message}
-        </div>
-      </>
-    );
+    mutation.mutate(text)
   }
 
   return (
     <>
       <Breadcrumb pageName="Custom Message" />
-      <div>
-        <div className="mb-6">
-          <label className="mb-2.5 block text-black dark:text-white">
-            Message
-          </label>
-          <textarea
-            rows={6}
-            placeholder="Type your message"
-            className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-          />
-        </div>
 
-        <button
-          className="flex w-fit justify-center rounded bg-primary p-3 font-medium text-gray hover:bg-opacity-90"
-          onClick={handleUpdate}
-          disabled={mutation.isPending}
-        >
-          {mutation.isPending ? 'Updating...' : 'Update'}
-        </button>
+      <div className="p-4 space-y-4">
+        {(isPending || isFetching) && (
+          <div className="text-center text-gray-500 dark:text-gray-400">
+            Loading…
+          </div>
+        )}
+
+        {!isPending && isError && (
+          <div className="text-red-600 dark:text-red-400">
+            Error loading: {error?.message}
+          </div>
+        )}
+
+        {!isPending && !isError && (
+          <>
+            <label className="block mb-1 font-medium text-gray-700 dark:text-gray-300">
+              Message
+            </label>
+
+            <textarea
+              rows={6}
+              className="
+                w-full
+                rounded
+                border-[1.5px] border-stroke dark:border-form-strokedark
+                bg-transparent dark:bg-form-input
+                py-3 px-5
+                text-black dark:text-white
+                outline-none
+                transition focus:border-primary active:border-primary
+                disabled:cursor-not-allowed disabled:opacity-50
+              "
+              value={text}
+              onChange={e => setText(e.target.value)}
+              disabled={mutation.isPending}
+            />
+
+            {fieldError && (
+              <p className="text-sm text-red-600 dark:text-red-400">
+                {fieldError}
+              </p>
+            )}
+
+            <button
+              onClick={handleSave}
+              disabled={mutation.isPending}
+              className={`
+                px-4 py-2 rounded font-medium text-white
+                ${
+                  mutation.isPending
+                    ? 'bg-gray-400 dark:bg-gray-600 cursor-not-allowed'
+                    : 'bg-primary hover:bg-primary/90'
+                }
+              `}
+            >
+              {mutation.isPending ? 'Saving…' : 'Save'}
+            </button>
+          </>
+        )}
       </div>
     </>
-  );
-};
-
-export default CustomMessage;
+  )
+}
