@@ -732,7 +732,7 @@ const Padal: React.FC = () => {
                     Book
                   </button>
                 ) : (
-                  <div className="flex space-x-6">
+                  <div className="flex space-x-2">
                     <button
                       onClick={() =>
                         handleEdit(
@@ -750,13 +750,13 @@ const Padal: React.FC = () => {
                           }
                         )
                       }
-                      className="flex w-20 justify-center rounded bg-warning py-1 px-3 font-medium text-gray hover:bg-opacity-90"
+                      className="flex w-16 justify-center rounded bg-warning py-1 px-3 font-medium text-gray hover:bg-opacity-90"
                     >
                       Edit
                     </button>
                     <button
                       onClick={() => handleCancelClick(slot.booking_id)}
-                      className="flex w-20 justify-center rounded bg-danger py-1 px-3 font-medium text-gray hover:bg-opacity-90"
+                      className="flex w-16 justify-center rounded bg-danger py-1 px-3 font-medium text-gray hover:bg-opacity-90"
                     >
                       Cancel
                     </button>

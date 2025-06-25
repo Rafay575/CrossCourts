@@ -178,19 +178,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                   Booking History
                 </NavLink>
               </li>
-            <li>
-                <NavLink
-                  to="/booking-settings"
-                  className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${
-                    (pathname === '/booking-settings' ||
-                      pathname.includes('booking-settings')) &&
-                    'bg-graydark dark:bg-meta-4'
-                  }`}
-                >
-                  <IoSettingsOutline className='w-5 h-5' />
-                  Booking Setting
-                </NavLink>
-              </li>
+           
             <li>
                 <NavLink
                   to="/custom-message"
